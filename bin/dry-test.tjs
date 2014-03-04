@@ -34,6 +34,8 @@ exports.run = function(){
 
     testFiles = testFiles.concat(tamedFiles);
 
+    if(!testFiles.length){ return _.log("No test files found."); }
+
     // mocha --require should --reporter dot --ui bdd
     var cmd = "mocha --reporter dot --ui qunit " + testFiles.join(" "); 
 
