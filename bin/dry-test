@@ -1,0 +1,6 @@
+#!/usr/local/bin/node
+
+require('tamejs').register();
+require('./dry-test.tjs').run();
+
+

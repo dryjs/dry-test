@@ -1,0 +1,14 @@
+#!/usr/local/bin/node
+
+var _ = require('dry-underscore');
+var path = require('path');
+var cwd = path.normalize(process.cwd());
+
+
+exports.run = function(){
+    await{ setTimeout(defer(), 1000); }
+    console.log(cwd);
+};
+
+
+
