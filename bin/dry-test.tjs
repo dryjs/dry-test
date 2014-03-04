@@ -3,11 +3,44 @@
 var _ = require('dry-underscore');
 var path = require('path');
 var cwd = path.normalize(process.cwd());
+var tamejs = require('tamejs');
 
 
 exports.run = function(){
-    await{ setTimeout(defer(), 1000); }
-    console.log(cwd);
+
+    var verbose = false;
+    if(process.argv[2] == '-v'){ verbose = true; }
+
+    function prune(dir){ return(dir == 'node_modules'); }
+    
+    _.time('tests.find');
+    await{ _.fs.find(cwd, { pattern: "*.test.tjs",  prune : prune }, defer(var tameFiles)); }
+    await{ _.fs.find(cwd, { pattern: "*.test.js",  prune : prune }, defer(var testFiles)); }
+    _.time('tests.find', verbose);
+
+    var listFiles = tameFiles.concat(testFiles);
+    listFiles = _.map(listFiles, function(f){ return(f.replace(cwd, "")); });
+
+    var tamedFiles = [];
+
+    _.time('tests.compile');
+    _.each(tameFiles, function(file){
+        var source = tamejs.getCompiledFileSync(file);
+        var compiledFilePath = _.fs.path.hideFile(_.fs.path.changeExtension(file, "js"));
+        _.fs.writeFile(compiledFilePath, source);
+        tamedFiles.push(compiledFilePath);
+    });
+    _.time('tests.compile', verbose);
+
+    testFiles = testFiles.concat(tamedFiles);
+
+    // mocha --require should --reporter dot --ui bdd
+    var cmd = "mocha --reporter dot --ui qunit " + testFiles.join(" "); 
+
+    _.log("running files: ", listFiles);
+    //_.log("running command: ", cmd);
+
+    _.shell(cmd);
 };
 
 

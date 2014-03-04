@@ -1,0 +1,17 @@
+var assert = require('assert');
+
+function ok(expr, msg) {
+  if (!expr) throw new Error(msg);
+}
+
+suite('async');
+
+test("timeout", function(done){
+    await{ setTimeout(defer(), 1000); }
+    ok(true);
+    done();
+});
+
+test('#length', function(){
+    ok('foo'.length == 3);
+});

@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 
 require('tamejs').register();
 require('./dry-test.tjs').run();
