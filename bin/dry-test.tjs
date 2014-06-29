@@ -1,10 +1,10 @@
 #!/usr/local/bin/node
 
 var _ = require('dry-underscore');
-var path = require('path');
-var cwd = path.normalize(process.cwd());
+var cwd = _.path.normalize(process.cwd());
 var tamejs = require('tamejs');
 
+function acatch(err){ throw(err); }
 
 exports.run = function(){
 
@@ -14,8 +14,8 @@ exports.run = function(){
     function prune(dir){ return(dir == 'node_modules'); }
     
     _.time('tests.find');
-    await{ _.fs.find(cwd, { pattern: "*.test.tjs",  prune : prune }, defer(var tameFiles)); }
-    await{ _.fs.find(cwd, { pattern: "*.test.js",  prune : prune }, defer(var testFiles)); }
+    await{ _.fs.find(cwd, { pattern: "*.test.tjs",  prune : prune }, _.plumb(defer(var tameFiles), acatch)); }
+    await{ _.fs.find(cwd, { pattern: "*.test.js",  prune : prune }, _.plumb(defer(var testFiles), acatch)); }
     _.time('tests.find', verbose);
 
     var listFiles = tameFiles.concat(testFiles);
@@ -26,7 +26,7 @@ exports.run = function(){
     _.time('tests.compile');
     _.each(tameFiles, function(file){
         var source = tamejs.getCompiledFileSync(file);
-        var compiledFilePath = _.fs.path.hideFile(_.fs.path.changeExtension(file, "js"));
+        var compiledFilePath = _.path.hide(_.path.extension(file, "js"));
         _.fs.writeFile(compiledFilePath, source);
         tamedFiles.push(compiledFilePath);
     });
@@ -34,16 +34,13 @@ exports.run = function(){
 
     testFiles = testFiles.concat(tamedFiles);
 
-    if(!testFiles.length){ return _.log("No test files found."); }
+    if(!testFiles.length){ return _.stdout("No test files found."); }
 
     // mocha --require should --reporter dot --ui bdd
     var cmd = "mocha --reporter dot --ui qunit " + testFiles.join(" "); 
 
-    _.log("running files: ", listFiles);
-    //_.log("running command: ", cmd);
+    _.stdout("running files: ", listFiles);
 
     _.shell(cmd);
 };
-
-
 
