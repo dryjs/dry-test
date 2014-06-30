@@ -1,15 +1,16 @@
 #!/usr/local/bin/node
+"use strict"
 
 var _ = require('dry-underscore');
-var cwd = _.path.normalize(process.cwd());
+var cwd = _.path.cwd();
 var tamejs = require('tamejs');
+var verbose = false;
 
 function acatch(err){ throw(err); }
 
-exports.run = function(){
+function rawFiles(args, callback){
 
-    var verbose = false;
-    if(process.argv[2] == '-v'){ verbose = true; }
+    if(args.length){ return callback(args); }
 
     function prune(dir){ return(dir == 'node_modules'); }
     
@@ -18,28 +19,50 @@ exports.run = function(){
     await{ _.fs.find(cwd, { pattern: "*.test.js",  prune : prune }, _.plumb(defer(var testFiles), acatch)); }
     _.time('tests.find', verbose);
 
-    var listFiles = tameFiles.concat(testFiles);
-    listFiles = _.map(listFiles, function(f){ return(f.replace(cwd, "")); });
-
-    var tamedFiles = [];
+    return callback(tameFiles.concat(testFiles));
+}
+ 
+function processedFiles(files){
+    var processedFiles = [];
 
     _.time('tests.compile');
-    _.each(tameFiles, function(file){
-        var source = tamejs.getCompiledFileSync(file);
-        var compiledFilePath = _.path.hide(_.path.extension(file, "js"));
-        _.fs.writeFile(compiledFilePath, source);
-        tamedFiles.push(compiledFilePath);
+    _.each(files, function(file){
+        if(_.path.extension.is(file, ".tjs")){
+            var source = tamejs.getCompiledFileSync(file);
+            var compiledFilePath = _.path.hide(_.path.extension(file, "js"));
+            _.fs.writeFile(compiledFilePath, source);
+            processedFiles.push(compiledFilePath);
+        }else{ processedFiles.push(file); }
     });
     _.time('tests.compile', verbose);
 
-    testFiles = testFiles.concat(tamedFiles);
+    return(processedFiles);
+}
 
-    if(!testFiles.length){ return _.stdout("No test files found."); }
+exports.run = function(){
+
+    var args = process.argv;
+    
+    // drop node
+    args.shift();
+    var scriptName = args.shift();
+    if(args[0] == '-v'){ 
+        verbose = true;
+        args.shift();
+    }
+
+    await{ rawFiles(args, defer(var files)); }
+        
+    var displayFiles = _.map(files, function(f){ return(_.path.normalize(_.path.relative(cwd, f))); });
+
+    var runFiles = processedFiles(files);
+
+    if(!runFiles.length){ return _.stdout("No test files found."); }
 
     // mocha --require should --reporter dot --ui bdd
-    var cmd = "mocha --reporter dot --ui qunit " + testFiles.join(" "); 
+    var cmd = "mocha --reporter dot --ui qunit " + runFiles.join(" "); 
 
-    _.stdout("running files: ", listFiles);
+    _.stdout("running files: ", displayFiles);
 
     _.shell(cmd);
 };
