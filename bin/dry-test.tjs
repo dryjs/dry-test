@@ -51,6 +51,11 @@ exports.run = function(){
         args.shift();
     }
 
+    // await{ _.fs.readFile("./mocha.args", _.plumb(defer(var err, mochaArgs), _.ecode.noEnt)); }
+    // if(err){ mochaArgs = "--reporter dot --ui qunit"; }
+    
+    var mochaArgs = "--reporter dot --ui qunit";
+
     await{ rawFiles(args, defer(var files)); }
         
     var displayFiles = _.map(files, function(f){ return(_.path.normalize(_.path.relative(cwd, f))); });
@@ -60,7 +65,7 @@ exports.run = function(){
     if(!runFiles.length){ return _.stdout("No test files found."); }
 
     // mocha --require should --reporter dot --ui bdd
-    var cmd = "mocha --reporter dot --ui qunit " + runFiles.join(" "); 
+    var cmd = "./node_modules/mocha/bin/mocha" + " " + mochaArgs + " " + runFiles.join(" "); 
 
     _.stdout("running files: ", displayFiles);
 
