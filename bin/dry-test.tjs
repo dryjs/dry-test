@@ -50,19 +50,21 @@ exports.run = function(){
         args.shift();
     }
 
-    var areNotMochaArgs = true;
-    var fileArgs = _.filter(_.map(args, function(a){
-        if(areNotMochaArgs){ return(a); }
-        else if(a === "--mocha"){ areNotMochaArgs = false; return(false); }
-        else{ return(false); }
-    }), _.identity);
-
     var areMochaArgs = false;
+    var fileArgs = _.fmap(args, function(a){
+        if(areMochaArgs){ return(false); }
+        else if(a === "--mocha"){ areMochaArgs = true; return(false); }
+        else{ return(a); }
+    });
+    _.p("file args:", fileArgs);
+
+    areMochaArgs = false;
     var mochaArgs = _.fmap(args, function(a){
         if(areMochaArgs){ return(a); }
         else if(a === "--mocha"){ areMochaArgs = true; return(false); }
         else{ return(false); }
     });
+    _.p("mocha args:", mochaArgs);
 
 
     mochaArgs = mochaArgs.join(" ");
