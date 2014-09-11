@@ -56,7 +56,6 @@ exports.run = function(){
         else if(a === "--mocha"){ areMochaArgs = true; return(false); }
         else{ return(a); }
     });
-    _.p("file args:", fileArgs);
 
     areMochaArgs = false;
     var mochaArgs = _.fmap(args, function(a){
@@ -64,7 +63,8 @@ exports.run = function(){
         else if(a === "--mocha"){ areMochaArgs = true; return(false); }
         else{ return(false); }
     });
-    _.p("mocha args:", mochaArgs);
+    // _.p("file args:", fileArgs);
+    // _.p("mocha args:", mochaArgs);
 
 
     mochaArgs = mochaArgs.join(" ");
