@@ -1,3 +1,3 @@
 
-npm install -g dry-test
+npm install -g /vagrant/export
 dry-test
