@@ -2,12 +2,11 @@ This is a test runner binary, it works on filename conventions. It's backed by m
 
     npm install dry-test
 
-    # dry-test
+    # dry-test [-v] [files] [--mocha [<mocha args>]]
 
 The binary will pickup all files names *.test.js and *.test.tjs in your current working tree. It ignores node_modules on the file tree walk. It will compile the .tjs (tamejs) files to hidden files, ie .*.test.tjs in the same path as the original file.  It will then pass all the files to mocha to test.
 
 It does a walk of the file system every time, so I imagine it runs pretty slow with a bunch of test files on a conventional HD. If you do builds of anything, buy an SSD. Seriously.
 
-I need to add some configuration support for mocha, right now it runs with qunit style tests and the dot reporter. 
+By default it runs with qunit style tests and the dot reporter, however you can pass whatever args you want to mocha with the ```--mocha``` argument.
 
-TODO: Add a shell script that I pass the file names to, and shell out to that in the node script, so mocha can be easily user configured. 

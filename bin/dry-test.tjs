@@ -1,5 +1,11 @@
 "use strict"
 
+// TODO: add support for client side mocha testing with mocha-phantomjs
+//      - run the users <whatever>.html file, 
+//      - they just point us to the directory they want to test, and the html file to load
+//          - maybe they just provide a file of header <script src=""> section and we combine that into our index.html file
+//      - maybe run a default http echo handler that returns the request object in json for testing of http libraries
+
 var _ = require('dry-underscore');
 var cwd = _.path.cwd();
 var tamejs = require('tamejs');
