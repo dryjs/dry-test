@@ -1,9 +1,9 @@
 {
   "name": "dry-test",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "dependencies": {
     "dry-underscore": {
-      "version": "0.14.7",
+      "version": "0.14.8",
       "from": "dry-underscore@latest",
       "dependencies": {
         "formidable": {
@@ -92,11 +92,6 @@
           "version": "0.2.1",
           "from": "https://registry.npmjs.org/keypress/-/keypress-0.2.1.tgz",
           "resolved": "https://registry.npmjs.org/keypress/-/keypress-0.2.1.tgz"
-        },
-        "mime": {
-          "version": "1.2.5",
-          "from": "mime@1.2.5",
-          "resolved": "https://registry.npmjs.org/mime/-/mime-1.2.5.tgz"
         }
       }
     },

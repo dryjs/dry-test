@@ -1,6 +1,6 @@
 {
     "name":"dry-test",
-    "version":"0.1.4",
+    "version":"0.1.5",
     "bin": "./bin/dry-test",
     "main":"./lib/tame-wrapper.js",
     "description": "The DRY Test Framework",
@@ -26,8 +26,8 @@
         "npm": "1"
     },
     "dependencies":{
-        "dry-underscore" : "0.14.7"
-        ,"tamejs" : "0.4.14"
-        ,"mocha" : "1.21.4"
+        "dry-underscore" : ""
+        ,"tamejs" : ""
+        ,"mocha" : ""
     }
 }
