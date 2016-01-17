@@ -17,14 +17,14 @@ function rawFiles(args, callback){
 
     if(args.length){ return callback(args); }
 
-    function prune(dir){ return(dir == 'node_modules'); }
+    function prune(dir_info){ return(dir_info.name === 'node_modules'); }
     
     _.time('tests.find');
-    await{ _.fs.find(cwd, { pattern: "*.test.tjs",  prune : prune }, _.plumb(defer(var tameFiles), acatch)); }
-    await{ _.fs.find(cwd, { pattern: "*.test.js",  prune : prune }, _.plumb(defer(var testFiles), acatch)); }
+    await{ _.fs.find(cwd, { pattern: "*.test.tjs",  ignore : prune }, _.plumb(defer(var tame_results), acatch)); }
+    await{ _.fs.find(cwd, { pattern: "*.test.js",  ignore : prune }, _.plumb(defer(var test_results), acatch)); }
     _.time('tests.find', verbose);
 
-    return callback(tameFiles.concat(testFiles));
+    return callback(_.concat(_.fs.paths(tame_results), _.fs.paths(test_results)));
 }
  
 function processedFiles(files){
