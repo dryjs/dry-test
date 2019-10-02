@@ -1,6 +1,6 @@
 {
     "name":"dry-test",
-    "version":"0.1.7",
+    "version":"0.1.8",
     "bin": "./bin/dry-test",
     "main":"./lib/tame-wrapper.js",
     "description": "The DRY Test Framework",
