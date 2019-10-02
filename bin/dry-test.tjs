@@ -35,7 +35,7 @@ function processedFiles(files){
         if(_.path.extension.is(file, ".tjs")){
             var source = tamejs.getCompiledFileSync(file);
             var compiledFilePath = _.path.hide(_.path.extension(file, "js"));
-            _.fs.writeFile(compiledFilePath, source);
+            _.fs.writeFile.sync(compiledFilePath, source);
             processedFiles.push(compiledFilePath);
         }else{ processedFiles.push(file); }
     });
@@ -86,7 +86,7 @@ exports.run = function(){
     if(!runFiles.length){ return _.stdout("No test files found."); }
 
     // mocha --require should --reporter dot --ui bdd
-    var mochaPath = _.path.normalize(_.path.join(__dirname, "..", "node_modules/mocha/bin/mocha"));
+    var mochaPath = require.resolve("mocha/bin/mocha"); // figure out where the binary is
     var cmd = mochaPath + " " + mochaArgs + " " + runFiles.join(" "); 
 
     _.stdout("running files: ", displayFiles);
